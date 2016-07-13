@@ -1,0 +1,29 @@
+package com.company;
+
+public class Main {
+
+    public static void main(String[] args) {
+        drawTangle(10, 11);
+        drawX(9);
+    }
+    //ex
+    public static void drawTangle(int width, int height) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                System.out.print(i == 0 || i == height - 1 || j == 0 || j == width - 1 ? "*" : " ");
+            }
+            System.out.println();
+        }
+    }
+    //ex
+    public static void drawX(int size){
+        if(size%2 ==0)
+            size++;
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+                System.out.print(i == j || i + j == size-1 ? "*" : " ");
+            }
+        }System.out.println();
+    }
+    //ex
+}
