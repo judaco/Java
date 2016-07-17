@@ -26,6 +26,25 @@ public class Main {
             System.out.println();
         }
     }
+    //Exercise 1 - Efficiency Solution
+    public static void drawRectangle2(int width, int height){
+        for (int i = 0; i < width; i++) {
+            System.out.print("*");
+        }
+        System.out.println();
+        for (int i = 0; i < height-2; i++) {
+            System.out.print("*");
+            for (int j = 0; j < width - 2; j++) {
+                System.out.print(" ");
+            }
+            System.out.print("*");
+            System.out.println();
+        }
+        for (int i = 0; i < width; i++) {
+            System.out.print("*");
+        }
+        System.out.println();
+    }
     //Exercise 3 - Put x and y and Center the Tangle
     public static void drawTangle2(int x, int y, int width, int height){
         for (int i = 0; i < y ; i++) {
