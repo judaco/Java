@@ -3,20 +3,21 @@ package com.company;
 public class Main {
 
     public static void main(String[] args) {
-        drawTangle1(10, 10);
+        drawTangle(5,5);
         drawX(5);
-        drawCircle(30,20,10);
+        System.out.println(sqrtPrecise(16));
+        drawTangle2(5,5,5,5);
     }
-    //Exercise 1 - Draw a Tangle
-    public static void drawTangle1(int width, int height){
+    //Exercise 1
+    public static void drawTangle(int width, int height) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                System.out.print( i==0 || i==height-1 || j==0 || j==width-1 ? "*" : " ");
+                System.out.print(i == 0 || i == height - 1 || j == 0 || j == width - 1 ? "*" : " ");
             }
             System.out.println();
         }
     }
-    //Exercise 2 - Draw a form of X
+    //Exerciese 2
     public static void drawX(int size) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -25,22 +26,37 @@ public class Main {
             System.out.println();
         }
     }
-    //Exercise 4
-    public static void drawCircle(int a, int b, int radius) {
-        for (int i = 0; i < b + radius + 10; i++) {
-            for (int j = 0; j < a + radius + 10; j++) {
-                System.out.print(isPointOnCircle(a, b, radius, j, i) ? "*" : " ");
+    //Exercise 3 - Put x and y and Center the Tangle
+    public static void drawTangle2(int x, int y, int width, int height){
+        for (int i = 0; i < y ; i++) {
+            System.out.println();
+        }
+        for (int i = 0; i < height ; i++) {
+            for (int j = 0; j < x; j++) {
+                System.out.print(" ");
+            }
+            for (int j = 0; j < width; j++) {
+                System.out.print(i == 0 || i == height - 1 || j == 0 || j == width - 1 ? "*" : " ");
             }
             System.out.println();
         }
+
+        }
+    //Exercise Other - Square Root none Integer (using of double)
+    public static double abs(double x){
+        return x < 0 ? -x : x;
     }
 
-    public static boolean isPointOnCircle(int a, int b, int radius, int x, int y){
-        int deltaX = a - x;
-        int deltaY = b - y;
-        int difference = (deltaX*deltaX + deltaY*deltaY) - radius * radius;
-        if(difference < 0)
-            difference *= -1;
-        return difference < 5;
+    public static double sqrtPrecise(double x){
+        double result = 0;
+        double add = 1000;
+        int count = 0;
+        while (abs(x - result * result) > 0.00001){
+            while((result + add) * (result + add) >= x){
+                add /= 10;
+                count++;
+            }result += add;
+            System.out.println(count);
+        }return result;
     }
 }
