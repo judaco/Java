@@ -5,9 +5,24 @@ package graphicshape;
  */
 public class Circle extends Shape {
     private int radius;
+    private int xPos, yPos;
 
-    public Circle(int r) {
-        setRadius(r);
+    public Circle(int xPos, int yPos, int radius){
+        this.xPos = xPos;
+        this.yPos = yPos;
+        setRadius(radius);
+    }
+
+    public Circle(int r) {//call up - this (10,10,r) --> public Circle(int xPos, int yPos, int radius)
+        this(10,10,r);
+    }
+
+    public Circle(){//call up - this (7) --> public Circle (int r)
+        this(7)
+    }
+    @Override
+    public String toString(){
+        return "center = (" + xPos + "," + yPos + ") and radius = " + radius;
     }
 
     public int getRadius() {
@@ -25,5 +40,11 @@ public class Circle extends Shape {
 
     void fillcolor(){
         System.out.println("color: " + color);
+    }
+    public void fillColor(int red, int green, int blue){
+
+    }
+    public void fillColor(float hue, float saturation, float brightness){
+
     }
 }
