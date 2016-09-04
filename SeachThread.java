@@ -1,25 +1,44 @@
 package com.company;
 
+import java.util.List;
+
 /**
- * Created by hackeru on 31/08/2016.
+ * Created by hackeru on 04/09/2016.
  */
-public class SeachThread extends Thread {
-
+public class SearchThread<T> extends Thread {
+    private List<T> list;//where the item is in the List
+    private T item;
     private int from, to;
-    private String[] words;
-    private String word;
+    private ItemFoundListener listener;//field listener
+    private int id;
 
-    public SeachThread(int from, int to, String[] words, String word) {
+    public SearchThread(List<T> list, T item, int from, int to, ItemFoundListener listener, int id){
+        this.list = list;
+        this.item = item;
         this.from = from;
         this.to = to;
-        this.words = words;
-        this.word = word;
+        this.listener = listener;
+        this.id = id;
     }
-        @Override
-        public void run () {
-            for (int i = from; i < to / 2; i++) {
-                if (words[i].equals(word))
-                    System.out.println(i);
+
+
+    @Override
+    public void run() {
+        for (int i = from; i < to; i++) {
+            if (listener == null)//protection
+                return;
+            if (!listener.proceed())//the question if to proceed or not
+                return;
+            if (list.get(i).equals(item)){
+                listener.itemFound(id, i);
+                return;
+            }
+            listener.itemFound(id, -1);
         }
+    }
+
+    static interface ItemFoundListener{//metvech
+        void itemFound(int id, int position);//inform to listener who found (id) and where (position)
+        boolean proceed();//I am asking the listener, if I didn't notice you, maybe somebody else noticed, so I continue searching
     }
 }
