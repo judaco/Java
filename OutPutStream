@@ -1,0 +1,23 @@
+package com.company;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+public class Main {
+
+    public static void main(String[] args) {
+        try {
+            OutputStream outputStream = new FileOutputStream("C:\\Users\\hackeru\\Desktop\\Juda\\lesson 3.txt");
+
+            String s = "hello world";
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
