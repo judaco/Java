@@ -1,138 +1,77 @@
-package com.aldevapp.user.usernamelistviewapp;
+package elyadumi.example.userlist;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements AddOrEditDialog.FragmentRes{
+public class MainActivity extends Activity implements Fragment_add_user.UserNameListener,Fragment_edit_user.UserNameEditListener {
 
-
-    ListView userItemList;
-    List<Users> usersList;
-    MyListAdaptor myListAdaptor;
-    FragmentManager fragmentManager;
-    int pos;
+    ListView listView;
+    List<User> users;
+    Button btnAddUser;
+    MyArrayUserAdapter adapter;
+    Button btnDeleteUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userItemList = (ListView)findViewById(R.id.userItemList);
-        usersList = new ArrayList<>();
-        usersList.add(new Users("moshe" , "123456"));
-        usersList.add(new Users("aharon" , "123456"));
-        usersList.add(new Users("shlomo" , "123456"));
-        usersList.add(new Users("odelya" , "123456"));
-        usersList.add(new Users("morya" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
-        usersList.add(new Users("noam" , "123456"));
+        // House Keeping
+        listView = (ListView) findViewById(R.id.listview_users);
+        btnAddUser = (Button) findViewById(R.id.btnAdd);
+        btnDeleteUser = (Button) findViewById(R.id.btnDeleteUser);
+        users = new ArrayList<User>();
+        adapter = new MyArrayUserAdapter(this,users);
 
-        myListAdaptor = new MyListAdaptor(this, usersList);
-        userItemList.setAdapter(myListAdaptor);
-        userItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Open New Fragment To Edit The User.
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                fragmentManager = getFragmentManager();
-                AddOrEditDialog addOrEditDialog = new AddOrEditDialog();
-                addOrEditDialog.setEdit(true);
-                addOrEditDialog.setListener(MainActivity.this);
-                addOrEditDialog.setPass(usersList.get(i).getPassword());
-                addOrEditDialog.setUser(usersList.get(i).getUsername());
-                pos = i;
-                addOrEditDialog.show(fragmentManager ,"");
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FragmentManager manager = getFragmentManager();
+                Fragment_edit_user edit_user = new Fragment_edit_user();
+                edit_user.setUser(users.get(position));
+                edit_user.setListener(MainActivity.this);
+                edit_user.setCancelable(false);
+                edit_user.show(manager,"edit_user");
+
+
             }
         });
 
+    }
+
+
+    // ADD User To the List
+    public void btn_add(View view) {
+        FragmentManager manager = getFragmentManager();
+        Fragment_add_user add_user = new Fragment_add_user();
+        add_user.setCancelable(false);
+        add_user.setListener(this);
+        add_user.setDialogTitle("Enter Your ID");
+        add_user.show(manager,"add_user");
 
     }
+
 
     @Override
-    public void addNew(String username, String password) {
-        usersList.add(new Users(username,password));
+    public void hasUserName(String add_name, String password) {
+        User user = new User(add_name,password);
+        users.add(user);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
 
     @Override
-    public void editUser(String username, String password) {
-        usersList.set(pos, new Users(username, password));
-        myListAdaptor.notifyDataSetChanged();
+    public void edit_user() {
+        adapter.notifyDataSetChanged();
     }
-
-    public void btnAddNewUser(View view) {
-        fragmentManager = getFragmentManager();
-        AddOrEditDialog addOrEditDialog = new AddOrEditDialog();
-        addOrEditDialog.setEdit(false);
-        addOrEditDialog.setListener(this);
-        addOrEditDialog.show(fragmentManager,"");
-
-    }
-    public class MyListAdaptor extends ArrayAdapter<Users> {
-        Activity activity;
-        List<Users> usersList;
-
-
-        public MyListAdaptor(Activity activity, List<Users> list) {
-            super(activity,R.layout.users_item, list);
-            this.activity = activity;
-            this.usersList = list;
-        }
-
-        class ViewConteiner{
-            TextView txtUser;
-            Button btnRemove;
-        }
-
-        @NonNull
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            ViewConteiner viewConteiner = null;
-            if(view == null){
-                LayoutInflater inflater = activity.getLayoutInflater();
-                view = inflater.inflate(R.layout.users_item, null);
-                viewConteiner = new ViewConteiner();
-                viewConteiner.txtUser = (TextView) view.findViewById(R.id.txtItemUser);
-                viewConteiner.btnRemove = (Button) view.findViewById(R.id.btnRemoverUser);
-                view.setTag(viewConteiner);
-            }else {
-                viewConteiner = (ViewConteiner) view.getTag();
-            }
-
-            viewConteiner.btnRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    usersList.remove(position);
-                    myListAdaptor.notifyDataSetChanged();
-                    Toast.makeText(MainActivity.this, "You Deleted : " + usersList.get(position).getUsername(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            viewConteiner.txtUser.setText(usersList.get(position).getUsername());
-            return view;
-        }
-
-
-    }
-
 }
